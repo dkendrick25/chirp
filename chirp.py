@@ -48,7 +48,6 @@ def submit_signup():
 def display_timeline():
     email = session['email']
     this_user = session['id']
-    this_user = user_id.dictresult()[0]['id']
     query = db.query('''
         select
             tweet.tweet,

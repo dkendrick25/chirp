@@ -21,7 +21,10 @@
       {% for tweet in tweets %}
       <div class = "well well-lg">
         <img class="avatar" src="http://placehold.it/100x80"/>
-        <p class="userInfo"><strong>{{tweet.name}}</strong> <span class="tweetTime">@{{tweet.user_name}} &#8226 {{tweet.time_stamp.strftime('%Y-%m-%d')}}</span></p> <br>
+        <p class="userInfo">
+          <strong>{{tweet.name}}</strong> 
+          <span class="tweetTime">@{{tweet.user_name}} &#8226 {{tweet.time_stamp.strftime('%Y-%m-%d')}}</span>
+        </p> <br>
         <p class="text-center chirpMessage">{{tweet.tweet}}</p>
       </div>
       {% endfor %}

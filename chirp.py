@@ -19,15 +19,17 @@ def submit_login():
     user_email = request.form['email']
     user_password = request.form['password']
     # the $1 keeps the username anomyous (bobby tables)
-    query = db.query("select email, password from a_user where a_user.email =$1", user_email)
+    query = db.query("select email, password, id from a_user where a_user.email =$1", user_email)
     # print query.namedresult()
     if len(query.namedresult()) <= 0:
         return redirect('/signup')
     db_password = query.dictresult()[0]
+    # print db_password['id']
     if bcrypt.hashpw(user_password.encode('utf-8'), db_password['password']) == db_password['password']:
         session['email']= request.form['email']
+        session['id'] = db_password['id']
         return redirect('/timeline')
-
+    return redirect('/')
 @app.route('/signup')
 def signup():
     return render_template('signup.html', title='Signup')
@@ -45,12 +47,7 @@ def submit_signup():
 @app.route('/timeline')
 def display_timeline():
     email = session['email']
-    user_id = db.query ('''
-        select id
-            from a_user
-        where
-            a_user.email = $1
-    ''', email)
+    this_user = session['id']
     this_user = user_id.dictresult()[0]['id']
     query = db.query('''
         select
@@ -82,23 +79,21 @@ def display_timeline():
 @app.route('/profile')
 def display_profile():
     email = session['email']
-    user_id = db.query ('''
-        select id
-            from a_user
-        where
-            a_user.email = $1
-    ''', email)
-    this_user = user_id.dictresult()[0]['id']
+    this_user = session['id']
     query = db.query('''
             select
 			a_user.name,
 			a_user.user_name,
             tweet.tweet,
             tweet.time_stamp
-        from a_user
+        from
+            a_user
         left outer join
         	tweet on a_user.id = tweet.user_id
-        where a_user.id = $1
+        where
+            a_user.id = $1
+        order by
+            tweet.time_stamp desc
     ''', this_user)
     tweets = query.namedresult()
     user_info = db.query('''
@@ -123,13 +118,7 @@ def display_profile():
 def chirp():
     chirp = request.form['chirp']
     email = session['email']
-    user_id = db.query ('''
-        select id
-            from a_user
-        where
-            a_user.email = $1
-    ''', email)
-    this_user = user_id.dictresult()[0]['id']
+    this_user = session['id']
 
     time = datetime.datetime.now()
     db.insert('tweet', user_id= this_user, tweet= chirp, time_stamp = time)

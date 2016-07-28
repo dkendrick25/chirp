@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="row">
+  <div class="col-md-4">
+    <img class="img-responsive" src="http://placehold.it/200x240"/>
+    <h4>name</h4>
+    <h6>@</h6>
+    <h6>followers</h6>
+    <h6>following</h6>
+    <h6>Tweet count</h6>
+    <button class="btn" type="button" name="button">follow</button>
+  </div>
+  <div class="col-md-8"></div>
+  <div class="row">
+    <div class="col-md-12 text-center">
+      {% for tweet in tweets %}
+      <div class = "tweet">
+        @{{tweet.user_name}}
+        <br> {{tweet.time_stamp}} <br>
+        {{tweet.tweet}}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

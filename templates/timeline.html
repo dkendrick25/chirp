@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="row">
+  <div class="col-md-12">
+    <form action="/chirp" class="form-inline" method="POST">
+      <div class="form-group">
+        <input type="text" class="form-control input-lg" placeholder="What's up?" name="chirp">
+      </div>
+      <button type="submit" class="btn btn-default">Chirp</button>
+    </form>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12">
+    {% for tweet in tweets %}
+    <div class="tweet">
+      <img src="http://placehold.it/100x80" alt="" />
+      @{{tweet.user_name}}
+      <br>
+      {{tweet.time_stamp.strftime('%Y-%m-%d')}}
+      <br>
+      {{tweet.tweet}}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

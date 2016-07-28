@@ -21,12 +21,13 @@ def submit_login():
     # the $1 keeps the username anomyous (bobby tables)
     query = db.query("select email, password from a_user where a_user.email =$1", user_email)
     # print query.namedresult()
+    if len(query.namedresult()) <= 0:
+        return redirect('/signup')
     db_password = query.dictresult()[0]
     if bcrypt.hashpw(user_password.encode('utf-8'), db_password['password']) == db_password['password']:
         session['email']= request.form['email']
         return redirect('/timeline')
-    else:
-        return redirect('/signup')
+
 @app.route('/signup')
 def signup():
     return render_template('signup.html', title='Signup')
@@ -43,6 +44,14 @@ def submit_signup():
     return redirect('/')
 @app.route('/timeline')
 def display_timeline():
+    email = session['email']
+    user_id = db.query ('''
+        select id
+            from a_user
+        where
+            a_user.email = $1
+    ''', email)
+    this_user = user_id.dictresult()[0]['id']
     query = db.query('''
         select
             tweet.tweet,
@@ -55,16 +64,16 @@ def display_timeline():
         left outer join
             a_user on tweet.user_id = a_user.id
         where
-            tweet.user_id = 1 or tweet.user_id in
+            tweet.user_id = $1 or tweet.user_id in
         (select
             followee_id
         from
             follow
         where
-            follow.follower_id = 1)
+            follow.follower_id = $1)
         order by
             tweet.time_stamp desc
-    ''')
+    ''', this_user)
     tweets = query.namedresult()
     return render_template('timeline.html', title='Timeline', tweets= tweets)
 
@@ -72,8 +81,16 @@ def display_timeline():
 
 @app.route('/profile')
 def display_profile():
+    email = session['email']
+    user_id = db.query ('''
+        select id
+            from a_user
+        where
+            a_user.email = $1
+    ''', email)
+    this_user = user_id.dictresult()[0]['id']
     query = db.query('''
-        select
+            select
 			a_user.name,
 			a_user.user_name,
             tweet.tweet,
@@ -81,8 +98,8 @@ def display_profile():
         from a_user
         left outer join
         	tweet on a_user.id = tweet.user_id
-        where a_user.id = 1
-    ''')
+        where a_user.id = $1
+    ''', this_user)
     tweets = query.namedresult()
     user_info = db.query('''
         select
@@ -95,20 +112,35 @@ def display_profile():
         inner join
 	       tweet on a_user.id = tweet.user_id
         where
-            a_user.id = 1
+            a_user.id = $1
         group by
             a_user.id
-    ''')
+    ''', this_user)
     tweet_counts = user_info.namedresult()
     return render_template('profile.html', title='Profile', tweets= tweets, tweet_counts = tweet_counts)
-
 
 @app.route('/chirp', methods=['POST'])
 def chirp():
     chirp = request.form['chirp']
+    email = session['email']
+    user_id = db.query ('''
+        select id
+            from a_user
+        where
+            a_user.email = $1
+    ''', email)
+    this_user = user_id.dictresult()[0]['id']
+
     time = datetime.datetime.now()
-    db.insert('tweet', user_id=1, tweet= chirp, time_stamp = time)
+    db.insert('tweet', user_id= this_user, tweet= chirp, time_stamp = time)
     return redirect('/timeline')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+
 
 app.secret_key = 'CSF686CCF85C6FRTCHQDBJDXHBHC1G478C86GCFTDCR'
 

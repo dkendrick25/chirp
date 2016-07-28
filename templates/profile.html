@@ -1,23 +1,28 @@
 {% extends 'layout.html' %}
 {% block body %}
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-2">
     <img class="img-responsive" src="http://placehold.it/200x240"/>
-    <h4>name</h4>
-    <h6>@</h6>
-    <h6>followers</h6>
-    <h6>following</h6>
-    <h6>Tweet count</h6>
-    <button class="btn" type="button" name="button">follow</button>
+    {% for count in tweet_counts %}
+    <h4>{{count.name}}</h4>
+    <h6 id="profileUserName">@{{count.user_name}}</h6>
+    <h5>Bio</h5>
+    <h6>{{count.bio}}</h6>
+    <button class="btn follow" type="button" name="follow">follow</button>
   </div>
-  <div class="col-md-8"></div>
-  <div class="row">
-    <div class="col-md-12 text-center">
+  <div class="col-md-10">
+    <div class="counts">
+      <h6><span>Followers: </span><span>Following: </span><span>Tweets: {{count.tweet_count}}</span></h6>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="row tweets">
+    <div class="col-md-offset-2 col-md-10">
       {% for tweet in tweets %}
-      <div class = "tweet">
-        @{{tweet.user_name}}
-        <br> {{tweet.time_stamp}} <br>
-        {{tweet.tweet}}
+      <div class = "well well-lg">
+        <img class="avatar" src="http://placehold.it/100x80"/>
+        <p class="userInfo"><strong>{{tweet.name}}</strong> <span class="tweetTime">@{{tweet.user_name}} &#8226 {{tweet.time_stamp.strftime('%Y-%m-%d')}}</span></p> <br>
+        <p class="text-center chirpMessage">{{tweet.tweet}}</p>
       </div>
       {% endfor %}
     </div>

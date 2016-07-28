@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block body %}
 <div class="row">
-  <div class="col-md-12">
+  <div class="col-md-12 text-center chirp_input">
     <form action="/chirp" class="form-inline" method="POST">
       <div class="form-group">
         <input type="text" class="form-control input-lg" placeholder="What's up?" name="chirp">
@@ -13,13 +13,15 @@
 <div class="row">
   <div class="col-md-12">
     {% for tweet in tweets %}
-    <div class="tweet">
-      <img src="http://placehold.it/100x80" alt="" />
-      @{{tweet.user_name}}
-      <br>
-      {{tweet.time_stamp.strftime('%Y-%m-%d')}}
-      <br>
+    <div class="well well-lg">
+      <img class="avatar" src="http://placehold.it/100x80"/>
+      <p class="userInfo"><strong>{{tweet.name}}</strong>
+      <span class="tweetTime">@{{tweet.user_name}}
+      {{tweet.time_stamp.strftime('%Y-%m-%d')}}</span>
+    </p>
+    <p class="text-center chirpMessage">
       {{tweet.tweet}}
+    </p>
     </div>
     {% endfor %}
   </div>

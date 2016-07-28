@@ -1,3 +1,46 @@
-.tweet {
-  border: 1px solid gray;
+.tweets {
+  margin-top: 10%;
+}
+
+body {
+  background-color: #f5f8fa;
+}
+
+.navbar {
+  background-color: white;
+}
+
+.counts {
+  margin-top: 5%;
+  background-color: white;
+  border: .25px solid #d3d3d3;
+  border-radius: 5px;
+}
+
+.well {
+  background-color: white;
+}
+
+.chirp_input {
+  margin-bottom: 2%;
+}
+
+span {
+  margin-right: 10%;
+}
+
+.tweetTime {
+  color: #bdbdbd;
+}
+
+#profileUserName {
+  color: #a8a8a8;
+}
+
+.chirpMessage {
+  font-size: 2em;
+}
+
+.userInfo {
+  display: inline;
 }

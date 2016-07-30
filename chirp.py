@@ -95,11 +95,10 @@ def display_profile():
             tweet.time_stamp desc
     ''', this_user)
     tweets = query.namedresult()
-    user_info = db.query('''
+    tweet_count = db.query('''
         select
 	       a_user.name,
 	       a_user.user_name,
-	       a_user.bio,
 	       count(tweet.tweet) as tweet_count
         from
 	       a_user
@@ -110,7 +109,7 @@ def display_profile():
         group by
             a_user.id
     ''', this_user)
-    tweet_counts = user_info.namedresult()
+    tweet_counts = tweet_count.namedresult()
     return render_template('profile.html', title='Profile', tweets= tweets, tweet_counts = tweet_counts)
 
 @app.route('/chirp', methods=['POST'])
